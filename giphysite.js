@@ -1,8 +1,18 @@
+$(document).ready(function() {
 
-$('button').on('click', function() {
-    var topic = $(this).data('topic');
-    var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
-    $.ajax({
+    function displayTerms() {
+        $('#topics').html('');
+        $.each( topics, function( i, l ) {
+            $('#topics').append('<button class="btn btn-primary topic-btn" data-topic="' + l + '">' + l + '</button>');
+        });
+
+
+
+    $('.topic-btn').on('click', function() {
+        console.log('what');
+        var topic = $(this).data('topic');
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
+        $.ajax({
             url: queryURL,
             method: 'GET'
         })
@@ -10,8 +20,8 @@ $('button').on('click', function() {
         
             var results = response.data;
           
-            for (var i = 0; i < results.length; i++)
-                var topicDiv = $('<div>');
+            for (var i = 0; i < results.length; i++) {
+                var topicDiv = $('<div class="col-sm-12 col-md-3">');
                 var p = $('<p>').text("Rating: " + results[i].rating);
                 var topicImage = $('<img>');
                 topicImage.attr('src', results[i].images.fixed_height.url);
@@ -20,4 +30,24 @@ $('button').on('click', function() {
                 $('#gifsAppearHere').prepend(topicDiv);
             }
         });
+    });
+
+    };
+
+    var topics = ['obama', 'trump', 'hillary', 'terminator'];
+
+    displayTerms();
+
+
+
+    $('#newTermBtn').on('click', function() {
+        var newTerm = $('#newTermText').val();
+        console.log(newTerm);
+
+        if(newTerm) {
+            topics.push(newTerm);
+            displayTerms();
+        }
+
+    });
 });
