@@ -6,31 +6,30 @@ $(document).ready(function() {
             $('#topics').append('<button class="btn btn-primary topic-btn" data-topic="' + l + '">' + l + '</button>');
         });
 
+        $('.topic-btn').on('click', function() {
+            var topic = $(this).data('topic');
+            var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
+            $.ajax({
+                url: queryURL,
+                method: 'GET'
+            })
+            .done(function(response) {
+            
+                var results = response.data;
 
-
-    $('.topic-btn').on('click', function() {
-        console.log('what');
-        var topic = $(this).data('topic');
-        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
-        $.ajax({
-            url: queryURL,
-            method: 'GET'
-        })
-        .done(function(response) {
-        
-            var results = response.data;
-          
-            for (var i = 0; i < results.length; i++) {
-                var topicDiv = $('<div class="col-sm-12 col-md-3">');
-                var p = $('<p>').text("Rating: " + results[i].rating);
-                var topicImage = $('<img>');
-                topicImage.attr('src', results[i].images.fixed_height.url);
-                topicDiv.append(p);
-                topicDiv.append(topicImage);
-                $('#gifsAppearHere').prepend(topicDiv);
-            }
+                $('#gifsAppearHere').html('');
+              
+                for (var i = 0; i < results.length; i++) {
+                    var topicDiv = $('<div class="col-sm-12 col-md-3">');
+                    var p = $('<p>').text("Rating: " + results[i].rating);
+                    var topicImage = $('<img>');
+                    topicImage.attr('src', results[i].images.fixed_height.url);
+                    topicDiv.append(p);
+                    topicDiv.append(topicImage);
+                    $('#gifsAppearHere').prepend(topicDiv);
+                }
+            });
         });
-    });
 
     };
 
@@ -38,19 +37,14 @@ $(document).ready(function() {
 
     displayTerms();
 
-
-
     $('#newTermBtn').on('click', function() {
         var newTerm = $('#newTermText').val();
-        console.log(newTerm);
 
         if(newTerm) {
             topics.push(newTerm);
             displayTerms();
             $('#newTermText').val('');
-
-
+            $('button[data-topic="'+ newTerm + '"]:first').click();
         }
-
     });
 });
