@@ -47,6 +47,9 @@ $(document).ready(function() {
         if(newTerm) {
             topics.push(newTerm);
             displayTerms();
+            $('#newTermText').val('');
+
+
         }
 
     });
